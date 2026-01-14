@@ -105,7 +105,7 @@ function leetgpu.start(on_vimenter)
     end
 
     local Menu = require("leetgpu-ui.renderer.menu")
-    Menu():mount()
+    Menu:new():mount()
 
     local utils = require("leetgpu.utils")
     utils.exec_hooks("enter")
