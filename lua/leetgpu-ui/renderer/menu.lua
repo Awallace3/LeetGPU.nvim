@@ -50,7 +50,7 @@ function Menu:render()
     }
 
     vim.api.nvim_buf_set_lines(self.popup.bufnr, 0, -1, false, lines)
-    vim.api.nvim_buf_set_option(self.popup.bufnr, "modifiable", false)
+    vim.bo[self.popup.bufnr].modifiable = false
 end
 
 function Menu:setup_keymaps()
