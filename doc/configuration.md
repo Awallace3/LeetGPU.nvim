@@ -148,6 +148,42 @@ opts = {
 }
 ```
 
+### CLI Configuration
+
+Configure LeetGPU CLI settings:
+
+```lua
+opts = {
+    cli = {
+        mode = "functional", -- Default simulation mode
+        -- Options: "functional" or "cycle-accurate"
+        
+        gpu = nil, -- GPU to use for cycle-accurate mode
+        -- Example: "NVIDIA GV100", "NVIDIA RTX 2080"
+        -- Leave nil for functional mode
+    },
+}
+```
+
+**CLI Examples:**
+
+```lua
+-- Functional mode (fast, default)
+opts = {
+    cli = {
+        mode = "functional",
+    },
+}
+
+-- Cycle-accurate mode with specific GPU
+opts = {
+    cli = {
+        mode = "cycle-accurate",
+        gpu = "NVIDIA GV100",
+    },
+}
+```
+
 ## Supported Languages
 
 LeetGPU.nvim supports the following languages:
@@ -167,6 +203,34 @@ LeetGPU.nvim supports the following languages:
   - `:LeetGPU exit` - Exit LeetGPU
 - `:LeetGPUMenu` - Direct menu access
 - `:LeetGPUExit` - Direct exit
+
+### LeetGPU CLI Commands
+
+Commands for interacting with the LeetGPU CLI:
+
+- `:LeetGPURun [--mode MODE] [--gpu GPU]` - Run current CUDA file
+  - Example: `:LeetGPURun --mode functional`
+  - Example: `:LeetGPURun --mode cycle-accurate --gpu "NVIDIA GV100"`
+- `:LeetGPUCudaVersion [MODE]` - Show CUDA version for specified mode
+  - Example: `:LeetGPUCudaVersion functional`
+  - Example: `:LeetGPUCudaVersion cycle-accurate`
+- `:LeetGPUListGpus` - List all available GPU options
+- `:LeetGPUNewProblem <name>` - Create or open a problem
+  - Example: `:LeetGPUNewProblem vector_add`
+  - Creates file at `~/.leetgpu/vector_add/vector_add.cu`
+- `:LeetGPUListProblems` - List all problems in `~/.leetgpu/`
+
+### Keybindings
+
+The following keybindings are automatically available in CUDA files (`.cu`):
+
+- `<leader>lr` - Run current file with default CLI settings
+- `<leader>lf` - Run in functional mode
+- `<leader>lc` - Run in cycle-accurate mode
+- `<leader>lv` - Show CUDA version
+- `<leader>lg` - List available GPUs
+- `<leader>lm` - Open LeetGPU menu
+- `<leader>lp` - List all problems
 
 ## Picker Integration
 
@@ -204,6 +268,11 @@ return {
         },
         
         logging = true,
+        
+        cli = {
+            mode = "functional",
+            gpu = nil,
+        },
         
         injector = {
             ["cuda"] = {

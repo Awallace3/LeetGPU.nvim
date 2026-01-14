@@ -136,6 +136,12 @@ return {
             ["LgHeader"] = { fg = "#FFFF00", bold = true },
         },
 
+        -- CLI settings
+        cli = {
+            mode = "functional", -- or "cycle-accurate"
+            gpu = nil, -- e.g., "NVIDIA GV100" for cycle-accurate mode
+        },
+
         -- Image support (requires image.nvim)
         image_support = false,
     },
