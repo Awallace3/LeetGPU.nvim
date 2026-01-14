@@ -1,0 +1,19 @@
+# Neovim
+*.swp
+*.swo
+*~
+
+# Lua
+luac.out
+
+# Plugin data
+.cache/
+.data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
