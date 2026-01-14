@@ -7,7 +7,7 @@ local command = {}
 function command.setup()
     -- Register LeetGPU commands
     vim.api.nvim_create_user_command("LeetGPUMenu", function()
-        require("leetgpu-ui.renderer.menu")():mount()
+        require("leetgpu-ui.renderer.menu"):new():mount()
     end, { desc = "Open LeetGPU menu" })
 
     vim.api.nvim_create_user_command("LeetGPUExit", function()
@@ -23,7 +23,7 @@ function command.start_with_cmd(opts)
 
     if cmd == "menu" then
         local Menu = require("leetgpu-ui.renderer.menu")
-        Menu():mount()
+        Menu:new():mount()
     elseif cmd == "exit" then
         require("leetgpu").stop()
     else
