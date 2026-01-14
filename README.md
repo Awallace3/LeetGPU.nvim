@@ -11,6 +11,9 @@ This plugin is modeled after [leetcode.nvim](https://github.com/kawre/leetcode.n
 - 🎨 Syntax highlighting and code completion
 - 📊 Challenge statistics and difficulty levels
 - 💾 Local caching for better performance
+- 🚀 **Integrated LeetGPU CLI support** - Run CUDA code directly from Neovim
+- ⌨️ **Smart keybindings** - Execute code with popup windows for instant feedback
+- 📁 **Problem management** - Organize problems in `~/.leetgpu/<PROBLEM_NAME>` directories
 
 ## 📬 Requirements
 
@@ -18,6 +21,7 @@ This plugin is modeled after [leetcode.nvim](https://github.com/kawre/leetcode.n
 - [plenary.nvim](https://github.com/nvim-lua/plenary.nvim)
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim)
 - [Nerd Font](https://www.nerdfonts.com) (optional, for icons)
+- [LeetGPU CLI](https://leetgpu.com/cli) (optional, for running CUDA code)
 
 ## 📦 Installation
 
@@ -87,6 +91,12 @@ use {
         width = "40%",
         show_stats = true,
     },
+
+    ---@type table CLI settings for LeetGPU CLI integration
+    cli = {
+        mode = "functional", -- or "cycle-accurate"
+        gpu = nil, -- e.g., "NVIDIA GV100"
+    },
 }
 ```
 
@@ -112,18 +122,58 @@ You can start LeetGPU.nvim in two ways:
 - `:LeetGPUMenu` - Same as `:LeetGPU`
 - `:LeetGPUExit` - Exit LeetGPU
 
+#### LeetGPU CLI Commands
+
+- `:LeetGPURun [--mode MODE] [--gpu GPU]` - Run current CUDA file with LeetGPU CLI
+- `:LeetGPUCudaVersion [MODE]` - Show CUDA version for specified mode
+- `:LeetGPUListGpus` - List available GPU options
+- `:LeetGPUNewProblem <name>` - Create a new problem in `~/.leetgpu/<name>/`
+- `:LeetGPUListProblems` - List all problems
+
 ### Keybindings
 
 Default keybindings in the menu:
 - `q` - Close/toggle menu
 - `<CR>` - Confirm selection
 
+#### LeetGPU CLI Keybindings (in CUDA files)
+
+- `<leader>lr` - Run current file with LeetGPU CLI (default settings)
+- `<leader>lf` - Run in functional mode
+- `<leader>lc` - Run in cycle-accurate mode
+- `<leader>lv` - Show CUDA version
+- `<leader>lg` - List available GPUs
+- `<leader>lm` - Open LeetGPU menu
+- `<leader>lp` - List all problems
+
 ## 🎯 Getting Started
 
 1. Install the plugin using your preferred plugin manager
 2. Configure the plugin in your Neovim config
-3. Launch with `:LeetGPU` or `nvim leetgpu.nvim`
-4. Start practicing GPU programming challenges!
+3. (Optional) Install [LeetGPU CLI](https://leetgpu.com/cli) for running CUDA code
+4. Launch with `:LeetGPU` or `nvim leetgpu.nvim`
+5. Start practicing GPU programming challenges!
+
+### Using LeetGPU CLI Integration
+
+1. **Create a new problem**:
+   ```vim
+   :LeetGPUNewProblem vector_add
+   ```
+
+2. **Write your CUDA code** in the opened file (`~/.leetgpu/vector_add/vector_add.cu`)
+
+3. **Run your code** using keybindings:
+   - Press `<leader>lr` to run with default settings
+   - Press `<leader>lf` for functional mode
+   - Press `<leader>lc` for cycle-accurate mode
+
+4. **View results** in the popup window that appears automatically
+
+5. **List your problems**:
+   ```vim
+   :LeetGPUListProblems
+   ```
 
 ## 🤝 Contributing
 

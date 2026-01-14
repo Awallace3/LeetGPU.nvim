@@ -116,6 +116,12 @@ local M = {
 
     ---@type boolean
     image_support = false,
+
+    ---@type table CLI settings
+    cli = {
+        mode = "functional", ---@type "functional" | "cycle-accurate"
+        gpu = nil, ---@type string|nil GPU name (e.g., "NVIDIA GV100")
+    },
 }
 
 return M
