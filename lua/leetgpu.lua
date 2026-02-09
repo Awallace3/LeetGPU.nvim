@@ -127,6 +127,11 @@ function leetgpu.setup(cfg)
         desc = "Open leetgpu.nvim",
     })
 
+    -- Setup CLI keybindings
+    local keybindings = require("leetgpu.cli.keybindings")
+    keybindings.setup_global()
+    keybindings.setup_autocommands()
+
     local group_id = vim.api.nvim_create_augroup("leetgpu_start", { clear = true })
     vim.api.nvim_create_autocmd("VimEnter", {
         group = group_id,

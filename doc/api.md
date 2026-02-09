@@ -20,6 +20,14 @@ LeetGPU.nvim is organized into several modules:
 - `leetgpu.picker` - Challenge picker integration
 - `leetgpu.command` - Command handlers
 - `leetgpu.theme` - UI theming
+- `leetgpu.cli` - LeetGPU CLI integration
+
+### CLI Modules
+
+- `leetgpu.cli` - Main CLI interface
+- `leetgpu.cli.file_manager` - Problem file management
+- `leetgpu.cli.output_popup` - Output display window
+- `leetgpu.cli.keybindings` - Keybinding management
 
 ### UI Modules
 
@@ -179,9 +187,44 @@ Parse challenge data from API response.
 
 ### Runner Module (leetgpu.runner)
 
+#### `run_current_buffer(opts)`
+
+Run the current buffer with LeetGPU CLI.
+
+**Parameters:**
+- `opts` (table, optional): Options
+  - `mode` (string): Simulation mode ("functional" or "cycle-accurate")
+  - `gpu` (string): GPU name for cycle-accurate mode
+
+**Example:**
+```lua
+require('leetgpu.runner').run_current_buffer({
+    mode = "functional"
+})
+```
+
+#### `run_problem(problem_name, opts)`
+
+Run a specific problem.
+
+**Parameters:**
+- `problem_name` (string): Name of the problem
+- `opts` (table, optional): Options (mode, gpu)
+
+#### `show_cuda_version(mode)`
+
+Display CUDA version in a popup.
+
+**Parameters:**
+- `mode` (string, optional): Simulation mode (default: "functional")
+
+#### `show_gpus()`
+
+Display available GPUs in a popup.
+
 #### `run(code, lang, test_cases)`
 
-Run code with test cases.
+Run code with test cases (legacy API).
 
 **Parameters:**
 - `code` (string): Code to run
@@ -194,7 +237,7 @@ Run code with test cases.
 
 #### `submit(code, lang)`
 
-Submit solution.
+Submit solution (legacy API).
 
 **Parameters:**
 - `code` (string): Solution code
@@ -203,6 +246,206 @@ Submit solution.
 **Returns:**
 - `table|nil`: Submission result or nil on error
 - `string|nil`: Error message if failed
+
+### CLI Module (leetgpu.cli)
+
+#### `is_installed()`
+
+Check if LeetGPU CLI is installed.
+
+**Returns:**
+- `boolean`: True if CLI is installed
+
+#### `get_version()`
+
+Get CLI version.
+
+**Returns:**
+- `string|nil`: Version string or nil if not installed
+
+#### `run(file_path, opts, callback)`
+
+Run CUDA file with LeetGPU CLI.
+
+**Parameters:**
+- `file_path` (string): Path to .cu file
+- `opts` (table, optional): Options
+  - `mode` (string): Simulation mode
+  - `gpu` (string): GPU name
+- `callback` (function, optional): Callback(success, output, error)
+
+**Example:**
+```lua
+local cli = require('leetgpu.cli')
+cli.run("kernel.cu", { mode = "functional" }, function(success, output, error)
+    if success then
+        print("Output:", output)
+    else
+        print("Error:", error)
+    end
+end)
+```
+
+#### `cuda_version(mode, callback)`
+
+Get CUDA version for specified mode.
+
+**Parameters:**
+- `mode` (string, optional): Simulation mode (default: "functional")
+- `callback` (function, optional): Callback(success, output, error)
+
+#### `list_gpus(callback)`
+
+List available GPUs.
+
+**Parameters:**
+- `callback` (function, optional): Callback(success, output, error)
+
+#### `upgrade(callback)`
+
+Upgrade CLI to latest version.
+
+**Parameters:**
+- `callback` (function, optional): Callback(success, output, error)
+
+### File Manager Module (leetgpu.cli.file_manager)
+
+#### `get_base_dir()`
+
+Get base directory for LeetGPU files (`~/.leetgpu`).
+
+**Returns:**
+- `Path`: Base directory path
+
+#### `get_problem_dir(problem_name)`
+
+Get or create problem directory.
+
+**Parameters:**
+- `problem_name` (string): Name of the problem
+
+**Returns:**
+- `Path`: Problem directory path
+
+#### `get_or_create_cuda_file(problem_name, content)`
+
+Create or get CUDA file for problem.
+
+**Parameters:**
+- `problem_name` (string): Name of the problem
+- `content` (string, optional): Initial file content
+
+**Returns:**
+- `Path`: File path
+- `boolean`: True if file was created
+
+#### `list_problems()`
+
+List all problem directories.
+
+**Returns:**
+- `string[]`: List of problem names
+
+#### `delete_problem(problem_name)`
+
+Delete problem directory.
+
+**Parameters:**
+- `problem_name` (string): Name of the problem
+
+**Returns:**
+- `boolean`: Success status
+
+#### `problem_exists(problem_name)`
+
+Check if problem exists.
+
+**Parameters:**
+- `problem_name` (string): Name of the problem
+
+**Returns:**
+- `boolean`: True if problem exists
+
+### Output Popup Module (leetgpu.cli.output_popup)
+
+#### `OutputPopup:new(opts)`
+
+Create new output popup window.
+
+**Parameters:**
+- `opts` (table, optional): Options
+  - `title` (string): Popup title
+  - `width` (string|number): Width
+  - `height` (string|number): Height
+  - `position` (string): Position
+
+**Returns:**
+- `lg.cli.OutputPopup`: Popup instance
+
+**Example:**
+```lua
+local OutputPopup = require('leetgpu.cli.output_popup')
+local popup = OutputPopup:new({ title = "Results" })
+popup:mount()
+popup:set_content("Hello from LeetGPU!")
+```
+
+#### `OutputPopup:mount()`
+
+Mount the popup window.
+
+#### `OutputPopup:set_content(lines)`
+
+Set popup content.
+
+**Parameters:**
+- `lines` (string|string[]): Content lines
+
+#### `OutputPopup:append_content(lines)`
+
+Append content to popup.
+
+**Parameters:**
+- `lines` (string|string[]): Content lines to append
+
+#### `OutputPopup:clear()`
+
+Clear popup content.
+
+#### `OutputPopup:set_title(title)`
+
+Update popup title.
+
+**Parameters:**
+- `title` (string): New title
+
+#### `OutputPopup:unmount()`
+
+Unmount the popup window.
+
+#### `OutputPopup:is_mounted()`
+
+Check if popup is mounted.
+
+**Returns:**
+- `boolean`: True if mounted
+
+### Keybindings Module (leetgpu.cli.keybindings)
+
+#### `setup_cuda_buffer(bufnr)`
+
+Setup buffer-local keybindings for CUDA files.
+
+**Parameters:**
+- `bufnr` (number, optional): Buffer number (default: current)
+
+#### `setup_global()`
+
+Setup global keybindings.
+
+#### `setup_autocommands()`
+
+Setup autocommands for automatic keybinding setup.
 
 ### Logger Module (leetgpu.logger)
 
